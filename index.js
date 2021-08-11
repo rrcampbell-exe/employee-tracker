@@ -3,7 +3,7 @@ const cTable = require('console.table');
 
 const questions = [
     {
-        type: 'checkbox',
+        type: 'list',
         name: 'taskSelection',
         message: 'What would you like to do?',
         choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', "Update An Employee's Role", 'Exit'],
@@ -23,8 +23,8 @@ function init() {
     .prompt(questions)
     .then(response => {
         console.log(response);
-        // switch (response) {
-        //     case response.taskSelection.includes('View All Departments'):
+        // switch (response.taskSelection[0]) {
+        //     case 'View All Departments':
         //         console.log("Here's a list of all departments.")
         //         break;
         //     case response.taskSelection.includes('View All Roles'):
