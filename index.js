@@ -31,22 +31,46 @@ function init() {
         //         console.log("Here is a list of all roles.")
         //         break;
         // }
-        if(response.taskSelection.includes('View All Departments')) {
+        if (response.taskSelection == 'View All Departments') {
             console.log("Here's a list of all departments.")
-        } else if (response.taskSelection.includes('View All Roles')) {
+            // RUN SOME FUNCTION TO DISPLAY ALL DEPARTMENTS
+            return;
+        } else if (response.taskSelection == 'View All Roles') {
             console.log("Here's a list of all roles.")
-        } else if (response.taskSelection.includes('View All Employees')) {
+            // RUN SOME FUNCTION TO DISPLAY ALL ROLES
+            return;
+        } else if (response.taskSelection == 'View All Employees') {
             console.log("Here's a list of all employees.")
-        } else if (response.taskSelection.includes('Add A Department')) {
+            // RUN SOME FUNCTION TO DISPLAY ALL EMPLOYEES
+            return;
+        } else if (response.taskSelection == 'Add A Department') {
             console.log("Here's how to add a department.")
-        } else if (response.taskSelection.includes('Add A Role')) {
+            // RUN SOME INQUIRER FUNCTION TO PROMPT FOR DEPARTMENT NAME
+            // RUN SOME FUNCTION THAT ADDS ABOVE NEW DEPARTMENT TO TABLE (INSERT INTO...)
+            return;
+        } else if (response.taskSelection == 'Add A Role') {
             console.log("Here's how to add a role.")
-        } else if (response.taskSelection.includes('Add An Employee')) {
+            // RUN SOME INQUIRER FUNCTION TO PROMPT FOR ROLE NAME
+            // RUN SOME FUNCTION TO ADD A ROLE (INSERT INTO...)
+            return;
+        } else if (response.taskSelection == 'Add An Employee') {
             console.log("Here's how to add an employee.")
-        } else if (response.taskSelection.includes("Update An Employee's Role")) {
+            // RUN SOME INQUIRER FUNCTION TO PROMPT FOR EMPLOYEE FIRST NAME
+            // RUN SOME INQUIRER FUNCTION TO PROMPT FOR EMPLOYEE LAST NAME
+            // RUN SOME INQUIRER FUNCTION TO PROMPT FOR EMPLOYEE JOB TITLE
+            // RUN SOME INQUIRER FUNCTION TO PROMPT FOR EMPLOYEE DEPARTMENT --> LIKELY TIED TO JOB TITLE VIA FK
+            // RUN SOME INQUIRER FUNCTION TO PROMPT FOR EMPLOYEE MANAGER --> LIKELY TIED TO JOB TITLE VIA FK
+            // RUN SOME FUNCTION TO ADD AN EMPLOYEE (INSERT INTO...)
+            return;
+        } else if (response.taskSelection == "Update An Employee's Role") {
             console.log("Here's how to change an employee's role.")
+            // RUN SOME FUNCTION TO DISPLAY A LIST OF EMPLOYEES (SELECT * FROM employees)
+            // RUN SOME FUNCTION TO SELECT AN EMPLOYEE ()
+            // RUN SOME FUNCTION TO UPDATE THEIR ROLE
+            return;
         } else {
             console.log("Thanks for using Employee Tracker. Goodbye!")
+            return;
         }
     })
 }
