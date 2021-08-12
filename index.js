@@ -96,12 +96,13 @@ const addEmployeePrompts = [
 function viewDepartments () {
     db.promise().query("SELECT dept_name AS Departments FROM departments;")
         .then( ([rows, fields]) => {
-            console.log(" Here's a list of all departments.")
+            console.log("Here's a list of all departments.")
             console.table(rows);
+            init(); // <-- CURRENTLY *WILL* GET RETURNED, BUT DISPLAY IS AWKWARD IN COMMAND LINE
         })
         .catch(console.table)
-        .then( () => db.end());
-    init(); // <-- CURRENTLY *WILL* GET RETURNED, BUT DISPLAY IS AWKWARD IN COMMAND LINE
+        // .then( () => db.end()); // <-- LIKELY SOURCE OF ERROR WHEN ATTEMPTING TO RUN A NEW QUERY IN SAME SESSION
+    
 }
 
 function viewRoles () {
@@ -111,13 +112,24 @@ function viewRoles () {
         console.table(rows);
     })
     .catch(console.table)
-    .then( () => db.end());
+    .then( () => db.end()); // <-- LIKELY SOURCE OF ERROR WHEN ATTEMPTING TO RUN A NEW QUERY IN SAME SESSION
     init(); // <-- CURRENTLY *WILL* GET RETURNED, BUT DISPLAY IS AWKWARD IN COMMAND LINE
 }
 
 function viewEmployees () {
-    db.promise().query("SELECT * FROM employees;")
+    let queryString = `
+    SELECT employees.first_name, employees.last_name, salary, job_title AS title, dept_name AS department, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+    FROM employees
+    JOIN roles
+    ON job_title_id = roles.id
+    JOIN departments
+    ON department_id = departments.id
+    JOIN employees manager 
+    ON employees.manager_id = manager.id;`
+
+    db.promise().query(queryString)
     .then( ([rows, fields]) => {
+        console.log("Here's a list of all employees.")
         console.table(rows);
     })
     .catch(console.table)
@@ -173,19 +185,16 @@ function init() {
             viewEmployees();
             return;
         } else if (response.taskSelection == 'Add A Department') {
-            console.log("Here's how to add a department.")
             // RUN SOME INQUIRER FUNCTION TO PROMPT FOR DEPARTMENT NAME
             addDepartment();
             // RUN SOME FUNCTION THAT ADDS ABOVE NEW DEPARTMENT TO TABLE (INSERT INTO...)
             return;
         } else if (response.taskSelection == 'Add A Role') {
-            console.log("Here's how to add a role.")
             // RUN SOME INQUIRER FUNCTION TO PROMPT FOR ROLE NAME
             addRole();
             // RUN SOME FUNCTION TO ADD A ROLE (INSERT INTO...)
             return;
         } else if (response.taskSelection == 'Add An Employee') {
-            console.log("Here's how to add an employee.")
             // RUN SOME INQUIRER FUNCTION TO PROMPT FOR EMPLOYEE DATA (FIRST NAME, LAST NAME, JOB TITLE, DEPT VIA FK, MANAGER VIA FK)
             addEmployee();
             // RUN SOME FUNCTION TO ADD AN EMPLOYEE (INSERT INTO...)
