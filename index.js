@@ -21,6 +21,14 @@ const questions = [
     }
 ]
 
+const again = [
+    {
+        type: 'confirm',
+        name: 'runAgain',
+        message: 'Would you like to perform another task?'
+    }
+]
+
 // add department prompts
 const addDeptPrompts = [
     {
@@ -32,7 +40,6 @@ const addDeptPrompts = [
                 db.promise().query("INSERT INTO departments (dept_name) VALUES ('" + deptName + "');")
                 .then( ([rows, fields]) => {
                     viewDepartments();
-                    init(); 
                 })
                 .catch(console.table)
                 return true;
@@ -104,7 +111,7 @@ function viewDepartments () {
         .then( ([rows, fields]) => {
             console.log("Here's a list of all departments.")
             console.table(rows);
-            init(); 
+            furtherAction(); 
         })
         .catch(console.table)
 }
@@ -114,7 +121,7 @@ function viewRoles () {
     .then( ([rows, fields]) => {
         console.log("Here's a list of all roles.")
         console.table(rows);
-        init(); 
+        furtherAction(); 
     })
     .catch(console.table)
 }
@@ -134,7 +141,7 @@ function viewEmployees () {
     .then( ([rows, fields]) => {
         console.log("Here's a list of all employees.")
         console.table(rows);
-        init();
+        furtherAction();
     })
     .catch(console.table)
 }
@@ -143,10 +150,7 @@ function viewEmployees () {
 
 function addDepartment() {
     return inquirer
-    .prompt(addDeptPrompts)
-    .then(response => {
-        console.log(response);
-    })
+    .prompt(addDeptPrompts);
 }
 
 function addRole() {
@@ -165,28 +169,36 @@ function addEmployee() {
     })
 }
 
+// Function to prompt user to perform another action
+function furtherAction() {
+    return inquirer
+    .prompt(again)
+    .then(response => {
+        if (response.runAgain === true) {
+            init();
+        } else {
+            console.log("Thanks for using Employee Tracker. Goodbye!")
+            return;
+        }
+    })
+}
+
 // Function to initialize application
 function init() {
     return inquirer
     .prompt(questions)
     .then(response => {
-        console.log(response);
         if (response.taskSelection == 'View All Departments') {
-            // RUN SOME FUNCTION TO DISPLAY ALL DEPARTMENTS
             viewDepartments();
             return;
         } else if (response.taskSelection == 'View All Roles') {
-            // RUN SOME FUNCTION TO DISPLAY ALL ROLES
             viewRoles();
             return;
         } else if (response.taskSelection == 'View All Employees') {
-            // RUN SOME FUNCTION TO DISPLAY ALL EMPLOYEES
             viewEmployees();
             return;
         } else if (response.taskSelection == 'Add A Department') {
-            // RUN SOME INQUIRER FUNCTION TO PROMPT FOR DEPARTMENT NAME
             addDepartment();
-            // RUN SOME FUNCTION THAT ADDS ABOVE NEW DEPARTMENT TO TABLE (INSERT INTO...)
             return;
         } else if (response.taskSelection == 'Add A Role') {
             // RUN SOME INQUIRER FUNCTION TO PROMPT FOR ROLE NAME
