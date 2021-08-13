@@ -29,6 +29,12 @@ const addDeptPrompts = [
         message: 'What is the name of this new department?',
         validate: deptName => {
             if (deptName) {
+                db.promise().query("INSERT INTO departments (dept_name) VALUES ('" + deptName + "');")
+                .then( ([rows, fields]) => {
+                    viewDepartments();
+                    init(); 
+                })
+                .catch(console.table)
                 return true;
             } else {
                 console.log('You must enter a name for this new department.')
@@ -94,31 +100,28 @@ const addEmployeePrompts = [
 // FUNCTIONS TO VIEW DATA
 
 function viewDepartments () {
-    db.promise().query("SELECT dept_name AS Departments FROM departments;")
+    db.promise().query("SELECT dept_name AS departments FROM departments;")
         .then( ([rows, fields]) => {
             console.log("Here's a list of all departments.")
             console.table(rows);
-            init(); // <-- CURRENTLY *WILL* GET RETURNED, BUT DISPLAY IS AWKWARD IN COMMAND LINE
+            init(); 
         })
         .catch(console.table)
-        // .then( () => db.end()); // <-- LIKELY SOURCE OF ERROR WHEN ATTEMPTING TO RUN A NEW QUERY IN SAME SESSION
-    
 }
 
 function viewRoles () {
-    db.promise().query("SELECT * FROM roles;")
+    db.promise().query("SELECT job_title as title, salary, dept_name AS department FROM roles JOIN departments ON department_id = departments.id;")
     .then( ([rows, fields]) => {
         console.log("Here's a list of all roles.")
         console.table(rows);
+        init(); 
     })
     .catch(console.table)
-    .then( () => db.end()); // <-- LIKELY SOURCE OF ERROR WHEN ATTEMPTING TO RUN A NEW QUERY IN SAME SESSION
-    init(); // <-- CURRENTLY *WILL* GET RETURNED, BUT DISPLAY IS AWKWARD IN COMMAND LINE
 }
 
 function viewEmployees () {
     let queryString = `
-    SELECT employees.first_name, employees.last_name, salary, job_title AS title, dept_name AS department, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+    SELECT employees.first_name AS 'first name', employees.last_name AS 'last name', salary, job_title AS title, dept_name AS department, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
     FROM employees
     JOIN roles
     ON job_title_id = roles.id
@@ -131,10 +134,9 @@ function viewEmployees () {
     .then( ([rows, fields]) => {
         console.log("Here's a list of all employees.")
         console.table(rows);
+        init();
     })
     .catch(console.table)
-    .then( () => db.end()); // <-- LIKELY SOURCE OF ERROR WHEN ATTEMPTING TO RUN A NEW QUERY IN SAME SESSION
-    init(); // <-- CURRENTLY *WILL* GET RETURNED, BUT DISPLAY IS AWKWARD IN COMMAND LINE
 }
 
 // FUNCTIONS TO UPDATE DATA
@@ -170,17 +172,14 @@ function init() {
     .then(response => {
         console.log(response);
         if (response.taskSelection == 'View All Departments') {
-            console.log("Here's a list of all departments.")
             // RUN SOME FUNCTION TO DISPLAY ALL DEPARTMENTS
             viewDepartments();
             return;
         } else if (response.taskSelection == 'View All Roles') {
-            console.log("Here's a list of all roles.")
             // RUN SOME FUNCTION TO DISPLAY ALL ROLES
             viewRoles();
             return;
         } else if (response.taskSelection == 'View All Employees') {
-            console.log("Here's a list of all employees.")
             // RUN SOME FUNCTION TO DISPLAY ALL EMPLOYEES
             viewEmployees();
             return;
@@ -200,7 +199,6 @@ function init() {
             // RUN SOME FUNCTION TO ADD AN EMPLOYEE (INSERT INTO...)
             return;
         } else if (response.taskSelection == "Update An Employee's Role") {
-            console.log("Here's how to change an employee's role.")
             // RUN SOME FUNCTION TO DISPLAY A LIST OF EMPLOYEES (SELECT * FROM employees)
             // RUN SOME FUNCTION TO SELECT AN EMPLOYEE ()
             // RUN SOME FUNCTION TO UPDATE THEIR ROLE
