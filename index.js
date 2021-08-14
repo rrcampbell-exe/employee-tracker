@@ -2,6 +2,16 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 const db = require('./db/connection');
 
+// OBJECTS FOR TEMPORARY STORAGE
+
+// employee object
+// let empObj = {
+//     fName = "",
+//     lName = "",
+//     jTitle = "",
+//     manager = ""
+// }
+
 // INQUIRER QUESTIONS
 
 // initial questions
@@ -81,19 +91,33 @@ const addRolePrompts = [
 const addEmployeePrompts = [
     {
         type: 'input',
-        name: 'employeeName',
-        message: 'What is the name of this new employee?',
-        validate: employeeName => {
-            if (employeeName) {
+        name: 'employeeFirstName',
+        message: 'What is the first name of this new employee?',
+        validate: employeeFirstName => {
+            if (employeeFirstName) {
+                return true;
+            } else {
+                console.log('You must enter a first name for this new employee.')
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'employeeLastName',
+        message: 'What is the last name of this new employee?',
+        validate: employeeLastName => {
+            if (employeeLastName) {
                 return true;
             } else {
                 console.log('You must enter a name for this new employee.')
             }
-        },
+        }
+    },
+    {
         type: 'list',
         name: 'newEmployeeTitle',
         message: 'Which role does this new employee have?',
-        choices: ['THIS IS WHERE YOU NEED TO DISPLAY THE FULL LIST OF ROLES'], // <-- NEED TO POPULATE WITH CURRENT JOB_TITLE LIST
+        choices: ['Host', 'Waitstaff', 'Bartender', 'Barback', 'Line Cook', 'Dishwasher', 'Prep Cook', 'Chef', 'Shift Supervisor', 'Assistant Manager', 'General Manager', 'Accountant', 'Marketing Rep'], // <-- NEED TO POPULATE WITH CURRENT JOB_TITLE LIST
         validate: newEmployeeTitle => {
             if (newEmployeeTitle) {
                 return true;
@@ -101,7 +125,20 @@ const addEmployeePrompts = [
                 console.log('You must choose a position for this employee.')
             }
         }
-    }
+    },
+    {
+        type: 'list',
+        name: 'employeeManager',
+        message: 'To which manager does this employee report?',
+        choices: ['Ean Christen', 'Hyrum Harouna', 'Darina Liliya'], // <-- NEED TO POPULATE WITH CURRENT JOB_TITLE LIST
+        validate: employeeManager => {
+            if (employeeManager) {
+                return true;
+            } else {
+                console.log('You must choose a manager for this employee. If this employee has no manager, enter NULL.')
+            }
+        }
+    },
 ]
 
 // FUNCTIONS TO VIEW DATA
@@ -165,7 +202,53 @@ function addEmployee() {
     return inquirer
     .prompt(addEmployeePrompts)
     .then(response => {
-        console.log(response);
+
+        if (response.newEmployeeTitle === 'Host') {
+            response.newEmployeeTitle = 1
+        } else if (response.newEmployeeTitle === 'Waitstaff') {
+            response.newEmployeeTitle = 2
+        } else if (response.newEmployeeTitle === 'Bartender') {
+            response.newEmployeeTitle = 3
+        } else if (response.newEmployeeTitle === 'Barback') {
+            response.newEmployeeTitle = 4
+        } else if (response.newEmployeeTitle === 'Line Cook') {
+            response.newEmployeeTitle = 5
+        } else if (response.newEmployeeTitle === 'Dishwasher') {
+            response.newEmployeeTitle = 6
+        } else if (response.newEmployeeTitle === 'Prep Cook') {
+            response.newEmployeeTitle = 7
+        } else if (response.newEmployeeTitle === 'Chef') {
+            response.newEmployeeTitle = 8
+        } else if (response.newEmployeeTitle === 'Shift Supervisor') {
+            response.newEmployeeTitle = 9
+        } else if (response.newEmployeeTitle === 'Assistant Manager') {
+            response.newEmployeeTitle = 10
+        } else if (response.newEmployeeTitle === 'General Manager') {
+            response.newEmployeeTitle = 11
+        } else if (response.newEmployeeTitle === 'Accountant') {
+            response.newEmployeeTitle = 12
+        } else {
+            response.newEmployeeTitle = 13
+        }
+
+        if (response.employeeManager === 'Ean Christen') {
+            response.employeeManager = 2
+        } else if (response.employeeManager === 'Hyrum Harouna') {
+            response.employeeManager = 3
+        } else if (response.employeeManager === 'Darina Liliya') {
+            response.employeeManager === 12
+        }
+
+        let queryString = `
+        INSERT INTO employees (first_name, last_name, job_title_id, manager_id) 
+        VALUES ('` + response.employeeFirstName + `', '` + response.employeeLastName + `', ` + response.newEmployeeTitle + `, ` + response.employeeManager + `);`
+        db.promise().query(queryString)
+        .then( ([rows, fields]) => {
+            console.log("Employee added! Here's the new list of all employees.")
+            viewEmployees();
+            furtherAction();
+        })
+        .catch(console.table)
     })
 }
 
