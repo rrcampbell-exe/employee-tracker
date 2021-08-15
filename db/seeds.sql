@@ -23,7 +23,7 @@ VALUES
 
 INSERT INTO employees (first_name, last_name, job_title_id, manager_id)
 VALUES
-    ('Hyrum', 'Harouna', 11, NULL),
+    ('Hyrum', 'Harouna', 11, 1),
     ('Ean', 'Christen', 10, 1),
     ('Darina', 'Liliya', 10, 1),
     ('Helena', 'Padma', 1, 2),
@@ -41,7 +41,7 @@ VALUES
     ('Seisyll', 'Ryôta', 8, 3),
     ('Gunn', 'Jana', 9, 3),
     ('Tyrese', 'Elviira', 6, 3),
-    ('Proserpine', 'Zvonko', 6, 2),
+    ('Proserpine', 'Zvonko', 6, 3),
     ('Ilene', 'Ekewaka', 9, 2),
     ('Cyril', 'Figgis', 12, 1),
     ('Hlengiwe', 'Gaylord', 13, 1);
