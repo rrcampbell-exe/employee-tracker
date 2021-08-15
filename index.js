@@ -234,9 +234,9 @@ function addEmployee() {
         if (response.employeeManager === 'Ean Christen') {
             response.employeeManager = 2
         } else if (response.employeeManager === 'Hyrum Harouna') {
-            response.employeeManager = 3
+            response.employeeManager = 1
         } else if (response.employeeManager === 'Darina Liliya') {
-            response.employeeManager === 12
+            response.employeeManager = 3
         }
 
         let queryString = `
