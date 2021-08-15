@@ -72,11 +72,25 @@ const addRolePrompts = [
             } else {
                 console.log('You must enter a name for this new role.')
             }
-        },
+        }
+    },
+    {
+        type: 'number',
+        name: 'salaryInput',
+        message: 'What is the salary for this new role?',
+        validate: salaryInput => {
+            if (salaryInput) {
+                return true;
+            } else {
+                console.log('You must enter a salary for this new role.')
+            }
+        }
+    },
+    {
         type: 'list',
         name: 'newRoleDept',
         message: 'To which department does this new role belong?',
-        choices: ['THIS IS WHERE YOU NEED TO DISPLAY THE FULL LIST OF DEPARTMENTS'], // <-- NEED TO POPULATE WITH CURRENT DEPT LIST
+        choices: ['Front of House', 'Back of House', 'Management', 'Administration'], // <-- NEED TO POPULATE WITH CURRENT DEPT LIST
         validate: newRoleDept => {
             if (newRoleDept) {
                 return true;
@@ -84,7 +98,7 @@ const addRolePrompts = [
                 console.log('You must enter a department for this new role.')
             }
         }
-    }
+    },
 ]
 
 // add employee prompts
@@ -146,7 +160,6 @@ const addEmployeePrompts = [
 function viewDepartments () {
     db.promise().query("SELECT dept_name AS departments FROM departments;")
         .then( ([rows, fields]) => {
-            console.log("Here's a list of all departments.")
             console.table(rows);
             furtherAction(); 
         })
@@ -156,7 +169,6 @@ function viewDepartments () {
 function viewRoles () {
     db.promise().query("SELECT job_title as title, salary, dept_name AS department FROM roles JOIN departments ON department_id = departments.id;")
     .then( ([rows, fields]) => {
-        console.log("Here's a list of all roles.")
         console.table(rows);
         furtherAction(); 
     })
@@ -176,7 +188,6 @@ function viewEmployees () {
 
     db.promise().query(queryString)
     .then( ([rows, fields]) => {
-        console.log("Here's a list of all employees.")
         console.table(rows);
         furtherAction();
     })
@@ -187,14 +198,43 @@ function viewEmployees () {
 
 function addDepartment() {
     return inquirer
-    .prompt(addDeptPrompts);
+    .prompt(addDeptPrompts)
+    .then (response => {
+        let queryString = `
+        INSERT INTO departments (dept_name) 
+        VALUES ('` + response.deptName + `');`
+        db.promise().query(queryString)
+        .then( ([rows, fields]) => {
+            furtherAction();
+        })
+        .catch(console.table)
+    })
 }
 
 function addRole() {
     return inquirer
     .prompt(addRolePrompts)
     .then(response => {
-        console.log(response);
+
+        if (response.newRoleDept === 'Front of House') {
+            response.newRoleDept = 1
+        } else if (response.newRoleDept === 'Back of House') {
+            response.newRoleDept = 2
+        } else if (response.newRoleDept === 'Management') {
+            response.newRoleDept = 3
+        } else if (response.newRoleDept === 'Administration') {
+            response.newRoleDept = 4
+        }
+
+        let queryString = `
+        INSERT INTO roles (job_title, salary, department_id) 
+        VALUES ('` + response.roleName + `', '` + response.salaryInput + `', ` + response.newRoleDept + `);`
+        db.promise().query(queryString)
+        .then( ([rows, fields]) => {
+            viewRoles();
+            furtherAction();
+        })
+        .catch(console.table)
     })
 }
 
