@@ -2,16 +2,6 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 const db = require('./db/connection');
 
-// OBJECTS FOR TEMPORARY STORAGE
-
-// employee object
-// let empObj = {
-//     fName = "",
-//     lName = "",
-//     jTitle = "",
-//     manager = ""
-// }
-
 // INQUIRER QUESTIONS
 
 // initial questions
@@ -158,7 +148,7 @@ const addEmployeePrompts = [
 // FUNCTIONS TO VIEW DATA
 
 function viewDepartments () {
-    db.promise().query("SELECT dept_name AS departments FROM departments;")
+    db.promise().query("SELECT dept_id AS id, dept_name AS departments FROM departments;")
         .then( ([rows, fields]) => {
             console.table(rows);
             furtherAction(); 
@@ -167,7 +157,7 @@ function viewDepartments () {
 }
 
 function viewRoles () {
-    db.promise().query("SELECT job_title as title, salary, dept_name AS department FROM roles JOIN departments ON department_id = departments.id;")
+    db.promise().query("SELECT role_id AS id, job_title as title, salary, dept_name AS department FROM roles JOIN departments ON department_id = departments.dept_id;")
     .then( ([rows, fields]) => {
         console.table(rows);
         furtherAction(); 
@@ -177,14 +167,15 @@ function viewRoles () {
 
 function viewEmployees () {
     let queryString = `
-    SELECT employees.first_name AS 'first name', employees.last_name AS 'last name', salary, job_title AS title, dept_name AS department, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+    SELECT employees.employee_id AS id, employees.first_name AS 'first name', employees.last_name AS 'last name', salary, job_title AS title, dept_name AS department, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
     FROM employees
     JOIN roles
-    ON job_title_id = roles.id
+    ON job_title_id = roles.role_id
     JOIN departments
-    ON department_id = departments.id
+    ON department_id = departments.dept_id
     JOIN employees manager 
-    ON employees.manager_id = manager.id;`
+    ON employees.manager_id = manager.employee_id
+    ORDER BY employees.employee_id ASC;`
 
     db.promise().query(queryString)
     .then( ([rows, fields]) => {
@@ -205,6 +196,7 @@ function addDepartment() {
         VALUES ('` + response.deptName + `');`
         db.promise().query(queryString)
         .then( ([rows, fields]) => {
+            console.log("Department added! Run 'View All Departments' to see your new list of departments.")
             furtherAction();
         })
         .catch(console.table)
@@ -231,7 +223,7 @@ function addRole() {
         VALUES ('` + response.roleName + `', '` + response.salaryInput + `', ` + response.newRoleDept + `);`
         db.promise().query(queryString)
         .then( ([rows, fields]) => {
-            viewRoles();
+            console.log("Role added! Run 'View All Roles' to see your new list of roles.")
             furtherAction();
         })
         .catch(console.table)
@@ -284,8 +276,7 @@ function addEmployee() {
         VALUES ('` + response.employeeFirstName + `', '` + response.employeeLastName + `', ` + response.newEmployeeTitle + `, ` + response.employeeManager + `);`
         db.promise().query(queryString)
         .then( ([rows, fields]) => {
-            console.log("Employee added! Here's the new list of all employees.")
-            viewEmployees();
+            console.log("Employee added! Run 'View All Employees' to see your new list of employees.")
             furtherAction();
         })
         .catch(console.table)
@@ -324,14 +315,10 @@ function init() {
             addDepartment();
             return;
         } else if (response.taskSelection == 'Add A Role') {
-            // RUN SOME INQUIRER FUNCTION TO PROMPT FOR ROLE NAME
             addRole();
-            // RUN SOME FUNCTION TO ADD A ROLE (INSERT INTO...)
             return;
         } else if (response.taskSelection == 'Add An Employee') {
-            // RUN SOME INQUIRER FUNCTION TO PROMPT FOR EMPLOYEE DATA (FIRST NAME, LAST NAME, JOB TITLE, DEPT VIA FK, MANAGER VIA FK)
             addEmployee();
-            // RUN SOME FUNCTION TO ADD AN EMPLOYEE (INSERT INTO...)
             return;
         } else if (response.taskSelection == "Update An Employee's Role") {
             // RUN SOME FUNCTION TO DISPLAY A LIST OF EMPLOYEES (SELECT * FROM employees)
