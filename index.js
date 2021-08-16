@@ -80,7 +80,7 @@ const addRolePrompts = [
         type: 'list',
         name: 'newRoleDept',
         message: 'To which department does this new role belong?',
-        choices: ['Front of House', 'Back of House', 'Management', 'Administration'], // <-- NEED TO POPULATE WITH CURRENT DEPT LIST
+        choices: ['Front of House', 'Back of House', 'Management', 'Administration'], 
         validate: newRoleDept => {
             if (newRoleDept) {
                 return true;
@@ -121,7 +121,7 @@ const addEmployeePrompts = [
         type: 'list',
         name: 'newEmployeeTitle',
         message: 'Which role does this new employee have?',
-        choices: ['Host', 'Waitstaff', 'Bartender', 'Barback', 'Line Cook', 'Dishwasher', 'Prep Cook', 'Chef', 'Shift Supervisor', 'Assistant Manager', 'General Manager', 'Accountant', 'Marketing Rep'], // <-- NEED TO POPULATE WITH CURRENT JOB_TITLE LIST
+        choices: ['Host', 'Waitstaff', 'Bartender', 'Barback', 'Line Cook', 'Dishwasher', 'Prep Cook', 'Chef', 'Shift Supervisor', 'Assistant Manager', 'General Manager', 'Accountant', 'Marketing Rep'],
         validate: newEmployeeTitle => {
             if (newEmployeeTitle) {
                 return true;
@@ -134,12 +134,55 @@ const addEmployeePrompts = [
         type: 'list',
         name: 'employeeManager',
         message: 'To which manager does this employee report?',
-        choices: ['Ean Christen', 'Hyrum Harouna', 'Darina Liliya'], // <-- NEED TO POPULATE WITH CURRENT JOB_TITLE LIST
+        choices: ['Ean Christen', 'Hyrum Harouna', 'Darina Liliya'], 
         validate: employeeManager => {
             if (employeeManager) {
                 return true;
             } else {
                 console.log('You must choose a manager for this employee. If this employee has no manager, enter NULL.')
+            }
+        }
+    },
+]
+
+// change employee role prompts
+const changeEmpRolePrompts = [
+    {
+        type: 'list',
+        name: 'empChoice',
+        message: 'Whose role would you like to change?',
+        choices: ['Hyrum Harouna', 'Ean Christen', 'Darina Liliya', 'Helena Padma', 'Geraint Gianpiero', 'Eógan Neelam', 'Raheem Josephus', 'Voula Simon', 'Bhavana Hamish', 'Hagit Uno', 'Elijah Mel', 'Chris Fabijan', 'Urbano Kory', 'Jaroslava Zerachiel', 'Murdoch Melvyn', 'Seisyll Ryôta', 'Jana Gunn', 'Tyrese Elviira', 'Prosperine Zvonko', 'Ilene Ekewaka', 'Cyril Figgis', 'Hlengiwe Gaylord'],
+        validate: empChoice => {
+            if (empChoice) {
+                return true;
+            } else {
+                console.log('You must choose an employee.')
+            }
+        }
+    },
+    {
+        type: 'list',
+        name: 'roleChoice',
+        message: "What should this employee's new role be?",
+        choices: ['Host', 'Waitstaff', 'Bartender', 'Barback', 'Line Cook', 'Dishwasher', 'Prep Cook', 'Chef', 'Shift Supervisor', 'Assistant Manager', 'General Manager', 'Accountant', 'Marketing Rep'],
+        validate: roleChoice => {
+            if (roleChoice) {
+                return true;
+            } else {
+                console.log('You must choose a new role for this employee.')
+            }
+        }
+    },
+    {
+        type: 'list',
+        name: 'managerChoice',
+        message: 'To which manager will this employee now report?',
+        choices: ['Hyrum Harouna', 'Ean Christen', 'Darina Liliya'], 
+        validate: newRoleDept => {
+            if (newRoleDept) {
+                return true;
+            } else {
+                console.log("You must confirm this employee's manager.")
             }
         }
     },
@@ -283,6 +326,108 @@ function addEmployee() {
     })
 }
 
+function changeEmpRole() {
+    return inquirer
+    .prompt(changeEmpRolePrompts)
+    .then(response => {
+
+        if (response.empChoice === 'Hyrum Harouna') {
+            response.empChoice = 1
+        } else if (response.empChoice === 'Ean Christen') {
+            response.empChoice = 2
+        } else if (response.empChoice === 'Darina Liliya') {
+            response.empChoice = 3
+        } else if (response.empChoice === 'Helena Padma') {
+            response.empChoice = 4
+        } else if (response.empChoice === 'Geraint Gianpiero') {
+            response.empChoice = 5
+        } else if (response.empChoice === 'Eógan Neelam') {
+            response.empChoice = 6
+        } else if (response.empChoice === 'Raheem Josephus') {
+            response.empChoice = 7
+        } else if (response.empChoice === 'Voula Simon') {
+            response.empChoice = 8
+        } else if (response.empChoice === 'Bhavana Hamish') {
+            response.empChoice = 9
+        } else if (response.empChoice === 'Hagit Uno') {
+            response.empChoice = 10
+        } else if (response.empChoice === 'Elijah Mel') {
+            response.empChoice = 11
+        } else if (response.empChoice === 'Chris Fabijan') {
+            response.empChoice = 12
+        } else if (response.empChoice === 'Urbano Kory') {
+            response.empChoice = 13
+        } else if (response.empChoice === 'Jaroslava Zerachiel') {
+            response.empChoice = 14
+        } else if (response.empChoice === 'Murdoch Melvyn') {
+            response.empChoice = 15
+        } else if (response.empChoice === 'Seisyll Ryôta') {
+            response.empChoice = 16
+        } else if (response.empChoice === 'Jana Gunn') {
+            response.empChoice = 17
+        } else if (response.empChoice === 'Tyrese Elviira') {
+            response.empChoice = 18
+        } else if (response.empChoice === 'Prosperine Zvonko') {
+            response.empChoice = 19
+        } else if (response.empChoice === 'Ilene Ekewaka') {
+            response.empChoice = 20
+        } else if (response.empChoice === 'Cyril Figgis') {
+            response.empChoice = 21
+        } else if (response.empChoice === 'Hlengiwe Gaylord') {
+            response.empChoice = 22
+        } 
+
+        if (response.roleChoice === 'Host') {
+            response.roleChoice = 1
+        } else if (response.roleChoice === 'Waitstaff') {
+            response.roleChoice = 2
+        } else if (response.roleChoice === 'Bartender') {
+            response.roleChoice = 3
+        } else if (response.roleChoice === 'Barback') {
+            response.roleChoice = 4
+        } else if (response.roleChoice === 'Line Cook') {
+            response.roleChoice = 5
+        } else if (response.roleChoice === 'Dishwasher') {
+            response.roleChoice = 6
+        } else if (response.roleChoice === 'Prep Cook') {
+            response.roleChoice = 7
+        } else if (response.roleChoice === 'Chef') {
+            response.roleChoice = 8
+        } else if (response.roleChoice === 'Shift Supervisor') {
+            response.roleChoice = 9
+        } else if (response.roleChoice === 'Assistant Manager') {
+            response.roleChoice = 10
+        } else if (response.roleChoice === 'General Manager') {
+            response.roleChoice = 11
+        } else if (response.roleChoice === 'Accountant') {
+            response.roleChoice = 12
+        } else if (response.roleChoice === 'Marketing Rep') {
+            response.roleChoice = 13
+        }
+
+        if (response.managerChoice === 'Hyrum Harouna') {
+            response.managerChoice = 1
+        } else if (response.managerChoice === 'Ean Christen') {
+            response.managerChoice = 2
+        } else if (response.managerChoice === 'Darina Liliya') {
+            response.managerChoice = 3
+        }
+
+        let queryString = `
+        UPDATE employees SET job_title_id = ` + response.roleChoice + `,
+        manager_id = ` + response.managerChoice + `
+        WHERE employee_id = ` + response.empChoice + `;`
+
+        db.promise().query(queryString)
+        .then( ([rows, fields]) => {
+            console.log("Employee role updated! Run 'View All Employees' to see your employee's updated information.")
+            furtherAction();
+        })
+        .catch(console.table)
+
+    })
+}
+
 // Function to prompt user to perform another action
 function furtherAction() {
     return inquirer
@@ -321,9 +466,7 @@ function init() {
             addEmployee();
             return;
         } else if (response.taskSelection == "Update An Employee's Role") {
-            // RUN SOME FUNCTION TO DISPLAY A LIST OF EMPLOYEES (SELECT * FROM employees)
-            // RUN SOME FUNCTION TO SELECT AN EMPLOYEE ()
-            // RUN SOME FUNCTION TO UPDATE THEIR ROLE
+            changeEmpRole();
             return;
         } else {
             console.log("Thanks for using Employee Tracker. Goodbye!")
