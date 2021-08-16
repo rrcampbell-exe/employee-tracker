@@ -37,11 +37,6 @@ const addDeptPrompts = [
         message: 'What is the name of this new department?',
         validate: deptName => {
             if (deptName) {
-                db.promise().query("INSERT INTO departments (dept_name) VALUES ('" + deptName + "');")
-                .then( ([rows, fields]) => {
-                    viewDepartments();
-                })
-                .catch(console.table)
                 return true;
             } else {
                 console.log('You must enter a name for this new department.')
@@ -191,7 +186,7 @@ const changeEmpRolePrompts = [
 // FUNCTIONS TO VIEW DATA
 
 function viewDepartments () {
-    db.promise().query("SELECT dept_id AS id, dept_name AS departments FROM departments;")
+    db.promise().query("SELECT dept_id AS id, dept_name AS departments FROM departments ORDER BY departments.dept_id ASC;")
         .then( ([rows, fields]) => {
             console.table(rows);
             furtherAction(); 
@@ -200,7 +195,7 @@ function viewDepartments () {
 }
 
 function viewRoles () {
-    db.promise().query("SELECT role_id AS id, job_title as title, salary, dept_name AS department FROM roles JOIN departments ON department_id = departments.dept_id;")
+    db.promise().query("SELECT role_id AS id, job_title as title, salary, dept_name AS department FROM roles JOIN departments ON department_id = departments.dept_id ORDER BY roles.role_id ASC;")
     .then( ([rows, fields]) => {
         console.table(rows);
         furtherAction(); 
